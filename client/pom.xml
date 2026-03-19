@@ -17,5 +17,25 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version> <!-- Используйте актуальную версию -->
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!-- Класс, содержащий public static void main -->
+                            <mainClass>ru.otus.client.ClientApp</mainClass>
+                            <!-- Опционально: добавляет classpath в манифест -->
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

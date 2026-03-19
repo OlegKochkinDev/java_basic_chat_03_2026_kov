@@ -44,4 +44,35 @@ public class Server {
             c.sendMsg(message);
         }
     }
+
+    public void privateMessage(Message message) {
+        ClientHandler receiverClient = message.getRecieverClient();
+        ClientHandler senderClient = message.getSenderClient();
+        String messageText = message.getMessage();
+
+        receiverClient.sendMsg(senderClient.getUsername()+"->"+receiverClient.getUsername()+": "+ messageText);
+        senderClient.sendMsg(senderClient.getUsername()+"->"+receiverClient.getUsername()+": "  + messageText);
+    }
+
+    public Message getClientHandlerFromMessage(String message) {
+        ClientHandler clientHandler = null;
+        String[] splitMessage = message.split(" ");
+        String messageText = "";
+        Message msg = new Message();
+
+        //Ищем клиента по юзернейму
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(splitMessage[1])) {
+                clientHandler = c;
+            }
+        }
+        msg.setRecieverClient(clientHandler);
+
+        //Собираем сообщение
+        for  (int i = 2; i <= splitMessage.length-1; i++) {
+            messageText +=  splitMessage[i]+" ";
+        }
+        msg.setMessage(messageText.trim());
+        return msg;
+    }
 }
