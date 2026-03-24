@@ -1,5 +1,6 @@
 package ru.otus.server;
 
+import javax.management.relation.Role;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ public class ClientHandler {
 
     private String username;
     private boolean isAuthenticate;
+    private UserRole role;
 
     public ClientHandler(Server server, Socket socket) throws IOException {
         this.server = server;
@@ -85,6 +87,8 @@ public class ClientHandler {
                             } else {
                                 server.privateMessage(privateMessage);
                             }
+                        } else if (message.startsWith("/kick")) {
+                            kickUser(message.split(" ")[1]);
                         }
 //                        String[] token = "12 erter 234 werw we".split(" ", 3);
                     } else {
@@ -94,6 +98,7 @@ public class ClientHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+                System.out.println(username + " DISCONNECT!");
                 disconnect();
             }
         }).start();
@@ -113,6 +118,14 @@ public class ClientHandler {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
+    }
+
+    public UserRole getRole() {
+        return role;
     }
 
     private void disconnect() {
@@ -139,5 +152,27 @@ public class ClientHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void kickUser(String username) {
+        ClientHandler kickedUser = server.getClientHandlerByUsername(username);
+        if (role == UserRole.ADMIN) {
+            if (kickedUser == null) {
+                sendMsg(ConsoleColors.RED_BOLD + " Пользователь " + username + " не найден!" + ConsoleColors.RESET);
+            } else {
+                if (kickedUser.getRole() == UserRole.ADMIN) {
+                    sendMsg(ConsoleColors.RED_BOLD + "Невозможно отключать Администратора." + ConsoleColors.RESET);
+                }
+                //kickedUser.disconnect();
+                kickedUser.sendMsg(ConsoleColors.RED_BOLD + "Администратор отключил Вас от чата." + ConsoleColors.RESET);
+                kickedUser.sendMsg("/exitok");
+
+            }
+
+        } else {
+            sendMsg(ConsoleColors.RED_BOLD + " нет прав на удаление пользователей из чата." + ConsoleColors.RESET);
+            return;
+        }
+
     }
 }

@@ -8,12 +8,26 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
         private String login;
         private String password;
         private String username;
+        private UserRole role;
 
         public User(String login, String password, String username) {
             this.login = login;
             this.password = password;
             this.username = username;
+            this.role = UserRole.USER;
         }
+
+        public User(String login, String password, String username, UserRole role) {
+            this.login = login;
+            this.password = password;
+            this.username = username;
+            this.role = role;
+        }
+
+        public UserRole getRole() {
+            return role;
+        }
+
     }
 
     private Server server;
@@ -25,6 +39,8 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
         this.users.add(new User("qwe", "qwe", "qwe1"));
         this.users.add(new User("asd", "asd", "asd1"));
         this.users.add(new User("zxc", "zxc", "zxc1"));
+        this.users.add(new User("kov", "123999", "ADMIN", UserRole.ADMIN));
+
     }
 
     @Override
@@ -36,6 +52,15 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
         for (User u : users) {
             if (u.login.equals(login) && u.password.equals(password)) {
                 return u.username;
+            }
+        }
+        return null;
+    }
+
+    private UserRole getUserRoleByUsername(String username) {
+        for (User u : users) {
+            if (u.username.equals(username)) {
+                return u.getRole();
             }
         }
         return null;
@@ -73,6 +98,10 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
         clientHandler.setUsername(authUsername);
         clientHandler.sendMsg("Вы подключились под ником: " + authUsername);
         server.subscribe(clientHandler);
+        clientHandler.setRole(getUserRoleByUsername(authUsername));
+        if (clientHandler.getRole() == UserRole.ADMIN) {
+            clientHandler.sendMsg(ConsoleColors.RED_BOLD + "  Вы подключились под ролью Администратора!"+ConsoleColors.RESET);
+        }
         clientHandler.sendMsg("/authok " + authUsername);
         return true;
     }

@@ -63,7 +63,7 @@ public class Server {
         String messageText = message.getMessage();
 
         receiverClient.sendMsg(ConsoleColors.PURPLE_BRIGHT + senderClient.getUsername() + "->" + receiverClient.getUsername() + ": " + messageText);
-        senderClient.sendMsg(ConsoleColors.PURPLE_BRIGHT + senderClient.getUsername() + "->" + receiverClient.getUsername() + ": " + messageText);
+        senderClient.sendMsg(senderClient.getUsername() + "->" + receiverClient.getUsername() + ": " + messageText + ConsoleColors.RESET);
     }
 
     public Message getClientHandlerFromMessage(String message) {
@@ -79,7 +79,6 @@ public class Server {
             }
         }
         msg.setRecieverClient(clientHandler);
-
         //Собираем сообщение
         for (int i = 2; i <= splitMessage.length - 1; i++) {
             messageText += splitMessage[i] + " ";
@@ -90,5 +89,14 @@ public class Server {
 
     public AuthenticatedProvider getAuthenticatedProvider() {
         return authenticatedProvider;
+    }
+
+    public ClientHandler getClientHandlerByUsername(String username) {
+        for (ClientHandler c : clients) {
+            if (c.getUsername().equals(username)) {
+                return c;
+            }
+        }
+        return null;
     }
 }
