@@ -31,8 +31,19 @@ public class ClientHandler {
                         if (message.equals("/exit")){
                             sendMsg("/exitok");
                             break;
+                        } else if (message.startsWith("/w")) {
+                            System.out.println("личное сообщение: " + message);
+                            Message privateMessage = server.getClientHandlerFromMessage(message);
+                            privateMessage.setSenderClient(this);
+                            if (privateMessage.getRecieverClient() == null) {
+                                sendMsg("Клиент не найден!");
+                            }  else if (getUsername().equals(privateMessage.getRecieverClient().getUsername())){
+                                sendMsg("Нельзя отправлять сообщения самому себе");
+                            }
+                            else  {
+                                server.privateMessage(privateMessage);
+                            }
                         }
-
 //                        String[] token = "12 erter 234 werw we".split(" ", 3);
                     } else {
                         server.broadcastMessage(username + ": " + message);
