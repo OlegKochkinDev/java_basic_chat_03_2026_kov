@@ -1,6 +1,5 @@
 package ru.otus.server;
 
-import javax.management.relation.Role;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
