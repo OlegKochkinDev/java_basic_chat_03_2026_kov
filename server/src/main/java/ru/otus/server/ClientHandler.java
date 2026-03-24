@@ -97,7 +97,6 @@ public class ClientHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                System.out.println(username + " DISCONNECT!");
                 disconnect();
             }
         }).start();
