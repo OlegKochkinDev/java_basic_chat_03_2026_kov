@@ -161,10 +161,10 @@ public class ClientHandler {
                 if (kickedUser.getRole() == UserRole.ADMIN) {
                     sendMsg(ConsoleColors.RED_BOLD + "Невозможно отключать Администратора." + ConsoleColors.RESET);
                 }
-                //kickedUser.disconnect();
+
                 kickedUser.sendMsg(ConsoleColors.RED_BOLD + "Администратор отключил Вас от чата." + ConsoleColors.RESET);
                 kickedUser.sendMsg("/exitok");
-
+                kickedUser.disconnect();
             }
 
         } else {
