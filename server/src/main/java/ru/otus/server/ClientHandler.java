@@ -1,5 +1,7 @@
 package ru.otus.server;
 
+import ru.otus.server.user.UserRole;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

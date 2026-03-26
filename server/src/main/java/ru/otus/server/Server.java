@@ -1,5 +1,8 @@
 package ru.otus.server;
 
+import ru.otus.server.auth.*;
+
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,10 +14,20 @@ public class Server {
     private List<ClientHandler> clients;
     private AuthenticatedProvider authenticatedProvider;
 
+
     public Server(int port) {
         this.port = port;
         this.clients = new CopyOnWriteArrayList<>();
-        this.authenticatedProvider = new InMemoryAuthenticatedProvider(this);
+
+        AuthDataBase.connect();
+        if (AuthDataBase.isConnected()) {
+            this.authenticatedProvider = new DataBaseAuthenticatedProvider(this);
+        } else {
+            this.authenticatedProvider = new InMemoryAuthenticatedProvider(this);
+        }
+
+
+
     }
 
     public void start() {
