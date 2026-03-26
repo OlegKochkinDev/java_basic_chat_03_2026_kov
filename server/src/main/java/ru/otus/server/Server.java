@@ -22,11 +22,11 @@ public class Server {
         AuthDataBase.connect();
         if (AuthDataBase.isConnected()) {
             this.authenticatedProvider = new DataBaseAuthenticatedProvider(this);
-            System.out.println("Authenticated provider run on Data Base");
         } else {
             this.authenticatedProvider = new InMemoryAuthenticatedProvider(this);
-            System.out.println("Authenticated provider run in memory");
         }
+
+
 
     }
 
