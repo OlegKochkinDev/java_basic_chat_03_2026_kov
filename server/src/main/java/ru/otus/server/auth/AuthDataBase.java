@@ -61,7 +61,7 @@ public class AuthDataBase {
     public static void insertUser(User user) throws SQLException {
         psInsert.setString(1, user.getLogin());
         psInsert.setString(2, user.getPassword());
-        psInsert.setString(3, user.getPassword());
+        psInsert.setString(3, user.getUsername());
         psInsert.setInt(4, 1);
         psInsert.executeUpdate();
     }
