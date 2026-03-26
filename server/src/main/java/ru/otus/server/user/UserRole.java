@@ -1,4 +1,4 @@
-package ru.otus.server;
+package ru.otus.server.user;
 
 public enum UserRole {
     USER, ADMIN

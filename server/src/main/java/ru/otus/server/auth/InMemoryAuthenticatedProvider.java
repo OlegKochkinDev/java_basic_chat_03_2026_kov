@@ -1,34 +1,14 @@
-package ru.otus.server;
+package ru.otus.server.auth;
+
+import ru.otus.server.*;
+import ru.otus.server.user.User;
+import ru.otus.server.user.UserRole;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
-    private class User {
-        private String login;
-        private String password;
-        private String username;
-        private UserRole role;
 
-        public User(String login, String password, String username) {
-            this.login = login;
-            this.password = password;
-            this.username = username;
-            this.role = UserRole.USER;
-        }
-
-        public User(String login, String password, String username, UserRole role) {
-            this.login = login;
-            this.password = password;
-            this.username = username;
-            this.role = role;
-        }
-
-        public UserRole getRole() {
-            return role;
-        }
-
-    }
 
     private Server server;
     private List<User> users;
@@ -50,8 +30,8 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
 
     private String getUsernameByLoginAndPassword(String login, String password) {
         for (User u : users) {
-            if (u.login.equals(login) && u.password.equals(password)) {
-                return u.username;
+            if (u.getLogin().equals(login) && u.getPassword().equals(password)) {
+                return u.getUsername();
             }
         }
         return null;
@@ -59,7 +39,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
 
     private UserRole getUserRoleByUsername(String username) {
         for (User u : users) {
-            if (u.username.equals(username)) {
+            if (u.getUsername().equals(username)) {
                 return u.getRole();
             }
         }
@@ -68,7 +48,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
 
     private boolean isLoginAlreadyExists(String login) {
         for (User u : users) {
-            if (u.login.equals(login)) {
+            if (u.getLogin().equals(login)) {
                 return true;
             }
         }
@@ -77,7 +57,7 @@ public class InMemoryAuthenticatedProvider implements AuthenticatedProvider {
 
     private boolean isUsernameAlreadyExists(String username) {
         for (User u : users) {
-            if (u.username.equals(username)) {
+            if (u.getUsername().equals(username)) {
                 return true;
             }
         }
