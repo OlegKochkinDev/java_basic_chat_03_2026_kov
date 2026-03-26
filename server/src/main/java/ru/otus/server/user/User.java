@@ -36,6 +36,10 @@ public class User {
         return username;
     }
 
+    public String toString() {
+        return "LOGIN: " + this.login +" PASS: " + this.password + " USERNAME: " + this.username + " ROLE: " + this.role;
+    }
+
 
 
 }

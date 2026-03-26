@@ -1,6 +1,11 @@
 package ru.otus.server.auth;
 
+import ru.otus.server.user.User;
+import ru.otus.server.user.UserRole;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AuthDataBase {
 
@@ -10,14 +15,16 @@ public class AuthDataBase {
     private static boolean isConnected;
 
 
-    public static void connect(){
+    public static void connect() {
         try {
             Class.forName("org.sqlite.JDBC");
             connection = DriverManager.getConnection("jdbc:sqlite:auth_db.db");
             statement = connection.createStatement();
+            psInsert = connection.prepareStatement("insert into tbl_users (login, pass, username, user_role) values (?, ?, ?, ?);");
             System.out.println("Connected to database auth_db");
+
             isConnected = true;
-        }catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -35,7 +42,29 @@ public class AuthDataBase {
         return isConnected;
     }
 
+    public static List<User> readUsers() {
+        List<User> users = new ArrayList<>();
+        try (ResultSet rs = statement.executeQuery("\n" +
+                "select u.login, u.pass, u.username, role\n" +
+                "from tbl_users u\n" +
+                "    left join tbl_user_roles ur on ur.role_id = u.user_role;")) {
+            while (rs.next()) {
 
+                users.add(new User(rs.getString(1), rs.getString(2), rs.getString(3), UserRole.fromString(rs.getString(4))));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return users;
+    }
+
+    public static void insertUser(User user) throws SQLException {
+        psInsert.setString(1, user.getLogin());
+        psInsert.setString(2, user.getPassword());
+        psInsert.setString(3, user.getPassword());
+        psInsert.setInt(4, 1);
+        psInsert.executeUpdate();
+    }
 
 
     private static void disconnect() {
